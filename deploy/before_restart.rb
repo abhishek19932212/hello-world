@@ -8,7 +8,7 @@ bash "stop resque workers" do
   user "root"
   cwd current_release
   code <<-EOH
-    monit status
+    monit status >> /var/log/monit.log
   EOH
 
 end
