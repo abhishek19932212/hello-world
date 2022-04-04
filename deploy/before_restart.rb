@@ -1,4 +1,5 @@
 Chef::Log.info("Running deploy/before_restart.rb...")
+Chef::Log.level = :debug
 
 rails_env = new_resource.environment["RAILS_ENV"]
 current_release = release_path
@@ -8,7 +9,9 @@ bash "stop resque workers" do
   user "root"
   cwd current_release
   code <<-EOH
-    monit status >> /srv/www/first_app/shared/log/monit.log
+    touch /var/log/monit1.log
+    monit status >> /var/log/monit1.log
+    cat /var/log/monit1.log
   EOH
 
 end
@@ -17,13 +20,9 @@ bash "stop mailman server" do
   user "root"
   cwd current_release
   code <<-EOH
-    monit status
+    touch /var/log/monit2.log
+    monit status >> /var/log/monit2.log
+    cat /var/log/monit2.log
   EOH
 
-end
-
-execute 'foo' do
-  command 'monit status'
-  live_stream true
-  action :run
 end
